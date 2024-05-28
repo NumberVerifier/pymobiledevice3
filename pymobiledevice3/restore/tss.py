@@ -766,6 +766,7 @@ class TSSRequest:
 
         logger.info('Sending TSS request...')
         logger.debug(self._request)
+        logger.info(plistlib.dumps(self._request))
         r = requests.post(TSS_CONTROLLER_ACTION_URL, headers=headers,
                           data=plistlib.dumps(self._request), verify=False)
         content = r.content

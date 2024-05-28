@@ -13,7 +13,7 @@ from pymobiledevice3.exceptions import AccessDeniedError, ConnectionFailedToUsbm
     TunneldConnectionError, UserDeniedPairingError
 from pymobiledevice3.osu.os_utils import get_os_utils
 
-coloredlogs.install(level=logging.INFO)
+coloredlogs.install(level=logging.DEBUG)
 
 logging.getLogger('quic').disabled = True
 logging.getLogger('asyncio').disabled = True

@@ -146,15 +146,19 @@ class MobileImageMounterService(LockdownService):
         if image_type is not None:
             request['PersonalizedImageType'] = image_type
 
+        print(request)
         response = self.service.send_recv_plist(request)
-
+        print(response)
         try:
             return response['PersonalizationIdentifiers']
         except KeyError as e:
             raise MessageNotSupportedError from e
 
     def query_personalization_manifest(self, image_type: str, signature: bytes) -> bytes:
-        response = self.service.send_recv_plist({
+        print({
+            'Command': 'QueryPersonalizationManifest', 'PersonalizedImageType': image_type, 'ImageType': image_type,
+            'ImageSignature': signature})
+        response = self.service.send_recv_newplist({
             'Command': 'QueryPersonalizationManifest', 'PersonalizedImageType': image_type, 'ImageType': image_type,
             'ImageSignature': signature})
         try:
@@ -206,9 +210,11 @@ class PersonalizedImageMounter(MobileImageMounterService):
         # and query the manifest from Apple's ticket server instead
         try:
             manifest = self.query_personalization_manifest('DeveloperDiskImage', hashlib.sha384(image).digest())
+            print('manifest:', str(manifest))
         except MissingManifestError:
             self.service = self.lockdown.start_lockdown_service(self.service_name)
             manifest = self.get_manifest_from_tss(plistlib.loads(build_manifest.read_bytes()))
+            print('ts manifest:', str(manifest))
 
         self.upload_image(self.IMAGE_TYPE, image, manifest)
 
@@ -336,6 +342,7 @@ def auto_mount_developer(lockdown: LockdownServiceProvider, xcode: str = None, v
 
 
 def auto_mount_personalized(lockdown: LockdownServiceProvider) -> None:
+    print('auto_mount_personalized')
     local_path = get_home_folder() / 'Xcode_iOS_DDI_Personalized'
     local_path.mkdir(parents=True, exist_ok=True)
 

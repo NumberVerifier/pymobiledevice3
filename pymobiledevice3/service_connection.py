@@ -40,6 +40,8 @@ print(client.recvall(20))
 def build_plist(d: Mapping, endianity: str = '>', fmt: Enum = plistlib.FMT_XML) -> bytes:
     payload = plistlib.dumps(d, fmt=fmt)
     message = struct.pack(endianity + 'L', len(payload))
+    print()
+    print (message + payload )
     return message + payload
 
 

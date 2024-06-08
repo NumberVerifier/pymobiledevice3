@@ -47,7 +47,10 @@ def build_plist(d: Mapping, endianity: str = '>', fmt: Enum = plistlib.FMT_XML) 
 
 def parse_plist(payload):
     try:
-        return plistlib.loads(payload)
+        pl = plistlib.loads(payload)
+        print()
+        print(pl)
+        return pl
     except plistlib.InvalidFileException:
         raise PyMobileDevice3Exception(f'parse_plist invalid data: {payload[:100].hex()}')
 
